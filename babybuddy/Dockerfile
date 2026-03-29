@@ -1,6 +1,11 @@
-ARG BUILD_FROM=ghcr.io/hassio-addons/base:17.2.1
+ARG BUILD_FROM=ghcr.io/hassio-addons/base:20.0.1
 # hadolint ignore=DL3006
 FROM ${BUILD_FROM}
+
+# Optional: BABYBUDDY_GIT_REF + BABYBUDDY_GIT_URL clone that ref instead of the
+# v2.7.1 tarball (build.yaml `args` or docker --build-arg). Leave unset for release builds.
+ARG BABYBUDDY_GIT_REF=
+ARG BABYBUDDY_GIT_URL=https://github.com/babybuddy/babybuddy.git
 
 VOLUME ["/run"]
 
@@ -8,14 +13,24 @@ VOLUME ["/run"]
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 RUN \
-  echo "**** downloading babybuddy ****" && \
-  curl -o \
-  /tmp/babybuddy.tar.gz -L \
-  "https://github.com/babybuddy/babybuddy/archive/refs/tags/v2.7.1.tar.gz" && \
-  mkdir -p /app/babybuddy && \
-  tar xf \
-  /tmp/babybuddy.tar.gz -C \
-  /app/babybuddy --strip-components=1
+  if [[ -n "${BABYBUDDY_GIT_REF}" ]]; then \
+    apk add --no-cache git && \
+    echo "**** cloning babybuddy (${BABYBUDDY_GIT_REF}) ****" && \
+    git clone --branch "${BABYBUDDY_GIT_REF}" --depth 1 "${BABYBUDDY_GIT_URL}" /tmp/babybuddy-src && \
+    mkdir -p /app/babybuddy && \
+    cp -a /tmp/babybuddy-src/. /app/babybuddy/ && \
+    rm -rf /tmp/babybuddy-src && \
+    apk del --no-cache git; \
+  else \
+    echo "**** downloading babybuddy v2.7.1 tarball ****" && \
+    curl -o \
+    /tmp/babybuddy.tar.gz -L \
+    "https://github.com/babybuddy/babybuddy/archive/refs/tags/v2.7.1.tar.gz" && \
+    mkdir -p /app/babybuddy && \
+    tar xf \
+    /tmp/babybuddy.tar.gz -C \
+    /app/babybuddy --strip-components=1; \
+  fi
 
 # hadolint ignore=DL3003
 RUN \

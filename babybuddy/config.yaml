@@ -1,17 +1,18 @@
 ---
 name: Baby Buddy
-version: 2.7.1
+version: 2.7.2
 homeassistant: 2023.6.2
 slug: baby_buddy
+# [dropme] Local Supervisor testing: comment out the `image:` line below so Home
+# Assistant builds this add-on from your branch instead of pulling a registry image.
+# Required: restore `image:` before hassio-builder / fork CI (else invalid tag
+# ottpeterr/:2.7.2) and before merging upstream. Revert this commit when done testing.
 image: "ottpeterr/image-{arch}-babybuddy"
 description: Track sleep, feedings, diaper changes, tummy time and more!
 url: https://github.com/OttPeterR/addon-babybuddy
 arch:
   - aarch64
   - amd64
-  - armhf
-  - armv7
-  - i386
 init: false
 panel_icon: hass:baby-bottle
 ingress: true

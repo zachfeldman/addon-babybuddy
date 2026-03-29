@@ -24,6 +24,11 @@
   (see breaking note).
 - `publish-container` workflow publishes only **aarch64** and **amd64** (see
   breaking note).
+### 🐞 Fixed
+- Trust reverse-proxy headers (`SECURE_PROXY_SSL_HEADER`, forwarded host/port)
+  and normalize `CSRF_TRUSTED_ORIGINS` from the environment with trimmed,
+  comma-separated segments (`babybuddy/settings/homeassistant.py`). Builds on
+  Intecpsp PR #87.
 
 ## 2.7.1
 ### ⬆️ Updated

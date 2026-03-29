@@ -9,5 +9,10 @@ USE_X_FORWARDED_PORT = True
 ENABLE_HOME_ASSISTANT_SUPPORT = True
 MESSAGE_STORAGE = "django.contrib.messages.storage.session.SessionStorage"
 
-if os.getenv("CSRF_TRUSTED_ORIGINS"):
-    CSRF_TRUSTED_ORIGINS = os.getenv("CSRF_TRUSTED_ORIGINS").split(",")
+# Comma-separated origins: strip segments and drop empties. Scheme validation
+# for each segment happens in etc/services.d/babybuddy/run before Gunicorn.
+_csrf_env = os.getenv("CSRF_TRUSTED_ORIGINS")
+if _csrf_env:
+    origins = [o.strip() for o in _csrf_env.split(",") if o.strip()]
+    if origins:
+        CSRF_TRUSTED_ORIGINS = origins

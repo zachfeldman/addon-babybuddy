@@ -29,6 +29,10 @@
   and normalize `CSRF_TRUSTED_ORIGINS` from the environment with trimmed,
   comma-separated segments (`babybuddy/settings/homeassistant.py`). Builds on
   Intecpsp PR #87.
+- Reject `CSRF_TRUSTED_ORIGINS` entries missing `http://` or `https://`
+  before Gunicorn starts (`etc/services.d/babybuddy/run`), with a clear error
+  in the add-on log.
+
 
 ## 2.7.1
 ### ⬆️ Updated

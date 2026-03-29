@@ -13,7 +13,7 @@ options+=(--workers=2)
 options+=(--threads=4)
 options+=(--worker-class=gthread)
 
-cd /app/babybuddy || bashio.exit.nok 'Failed cd, /app/babybuddy does not exist, exiting...'
+cd /app/babybuddy || bashio::exit.nok 'Failed cd, /app/babybuddy does not exist, exiting...'
 
 csrf_raw="$(bashio::config 'CSRF_TRUSTED_ORIGINS')"
 
@@ -23,7 +23,7 @@ export \
     TIME_ZONE="${TZ:-UTC}" \
     DEBUG="${DEBUG:-False}" \
     ENABLE_HOME_ASSISTANT_SUPPORT=true \
-    SECRET_KEY="${SECRET_KEY:-$(cat /config/.secretkey)}"
+    SECRET_KEY="${SECRET_KEY:-$(cat /data/.secretkey)}"
 
 export CSRF_TRUSTED_ORIGINS="${csrf_raw}"
 
@@ -36,4 +36,3 @@ fi
 
 exec \
     s6-setuidgid root gunicorn babybuddy.wsgi "${options[@]}"
-

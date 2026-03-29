@@ -46,20 +46,25 @@ ln -s /data/data /config/data
 ln -s /data/data /app/babybuddy/data
 ln -s /data/media /config/media
 ln -s /data/media /app/babybuddy/media
-#TODO: need to properly link  /config/.secretkey
 
+# Django SECRET_KEY must live on the Supervisor persistent volume (/data), not under
+# /config (often ephemeral). A new key every start breaks sessions and CSRF cookies.
+secret_key_file="/data/.secretkey"
+if [ -f "/config/.secretkey" ] && [ ! -f "${secret_key_file}" ]; then
+    mv /config/.secretkey "${secret_key_file}"
+fi
 cd /app/babybuddy || exit
-if [ ! -f "/config/.secretkey" ]; then
+if [ ! -f "${secret_key_file}" ]; then
     echo "**** No secret key found, generating one ****"
     python3 manage.py shell -c 'from django.core.management import utils; print(utils.get_random_secret_key())' \
-        | tr -d '\n' > /config/.secretkey
+        | tr -d '\n' > "${secret_key_file}"
 fi
 export \
     DJANGO_SETTINGS_MODULE="babybuddy.settings.homeassistant" \
     ALLOWED_HOSTS="${ALLOWED_HOSTS:-*}" \
     TIME_ZONE="${TZ:-UTC}" \
     DEBUG="${DEBUG:-False}" \
-    SECRET_KEY="${SECRET_KEY:-$(cat /config/.secretkey)}"
+    SECRET_KEY="${SECRET_KEY:-$(cat "${secret_key_file}")}"
 python3 manage.py createcachetable
 python3 manage.py migrate --noinput
 

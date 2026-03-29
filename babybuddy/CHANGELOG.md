@@ -25,6 +25,10 @@
 - `publish-container` workflow publishes only **aarch64** and **amd64** (see
   breaking note).
 ### 🐞 Fixed
+- Store Django `SECRET_KEY` in `/data/.secretkey` (persistent volume) instead
+  of `/config/.secretkey`, which can be ephemeral on Home Assistant. This keeps
+  sessions and CSRF cookies stable across restarts—needed for reliable Ingress
+  testing and aligns with Home Assistant persistent-storage expectations.
 - Trust reverse-proxy headers (`SECURE_PROXY_SSL_HEADER`, forwarded host/port)
   and normalize `CSRF_TRUSTED_ORIGINS` from the environment with trimmed,
   comma-separated segments (`babybuddy/settings/homeassistant.py`). Builds on

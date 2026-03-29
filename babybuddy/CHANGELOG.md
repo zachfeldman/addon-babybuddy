@@ -36,7 +36,9 @@
 - Reject `CSRF_TRUSTED_ORIGINS` entries missing `http://` or `https://`
   before Gunicorn starts (`etc/services.d/babybuddy/run`), with a clear error
   in the add-on log.
-
+- Optional Docker build-args `BABYBUDDY_GIT_REF` and `BABYBUDDY_GIT_URL`
+  (`Dockerfile`) clone a Git ref instead of the v2.7.1 tarball for local or
+  pre-release Baby Buddy builds.
 
 ## 2.7.1
 ### ⬆️ Updated

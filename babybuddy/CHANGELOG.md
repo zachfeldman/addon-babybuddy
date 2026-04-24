@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2.8.0
+### ⬆️ Updated
+- Bumps bundled Baby Buddy to [2.8.0](https://github.com/babybuddy/babybuddy/releases/tag/v2.8.0).
+
 ## 2.7.2
 ### 🚨 Breaking
 - **armhf, armv7, and i386 builds are deprecated** and are no longer built in
